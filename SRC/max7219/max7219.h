@@ -13,6 +13,7 @@
       void setup_scan_limit(byte scanLimit);
       void shut_down(byte data);
       void setup_display_test(byte data);
+      void send_pattern(byte pattern[]);
   };
 
 #endif
