@@ -1,5 +1,5 @@
-#include <SPI.h>
-
+#include "max7219.h"
+/*
 #define MAX7219_LOAD 10 // Pin connected to MAX7219 LOAD/CS pin
 #define MAX7219_DIN 11 // Pin connected to MAX7219 DIN pin
 #define MAX7219_CLK 13 // Pin connected to MAX7219 CLK pin
@@ -27,19 +27,21 @@ void displayPattern(byte pattern[]) {
     sendCommand(i + 1, pattern[i]);
   }
 }
+*/
+
+max7219Matrix dot_display;
 
 void setup() {
-  pinMode(MAX7219_LOAD, OUTPUT);
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);
   SPI.setClockDivider(SPI_CLOCK_DIV16);
-  initMAX7219();
+  dot_display.max7219Matrix::init_max7219();
 }
 
 void loop() {
   // Example pattern: heart shape
-  byte pattern[] = {
+  uint8_t pattern[8] = {
     0b00000000,
     0b01100110,
     0b11111111,
@@ -50,7 +52,7 @@ void loop() {
     0b00000000
   };
 
-  displayPattern(pattern);
+  dot_display.max7219Matrix::send_pattern(pattern);
 
   delay(1000); // Wait for 1 second
 }
