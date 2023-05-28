@@ -13,7 +13,8 @@
       void setup_scan_limit(uint8_t scanLimit);
       void shut_down(uint8_t data);
       void setup_display_test(uint8_t data);
-      void send_pattern(const uint8_t (&pattern)[8]);
+      void send_pattern(uint8_t* pattern, uint8_t size);
+      void select_dot(uint8_t collum, uint8_t row);
   };
 
 #endif

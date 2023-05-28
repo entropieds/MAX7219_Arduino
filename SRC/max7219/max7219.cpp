@@ -23,11 +23,11 @@ void max7219Matrix::send_cmd(uint8_t addres, uint8_t data){
 
 void max7219Matrix::init_max7219(){
   pinMode(MAX7219_LOAD, OUTPUT);
-  max7219Matrix::send_cmd(DECODE_MODE, 0x00);
-  max7219Matrix::send_cmd(INTENSITY, 0x00);
-  max7219Matrix::send_cmd(SCAN_LIMIT, 0x07);
-  max7219Matrix::send_cmd(Shutdown, 0x01);
-  max7219Matrix::send_cmd(DISPLAY_TEST, 0x00);
+  max7219Matrix::setup_decode_mode(0);
+  max7219Matrix::setup_bright(0x00);
+  max7219Matrix::setup_scan_limit(0x07);
+  max7219Matrix::shut_down(0);
+  max7219Matrix::setup_display_test(0x00);
 }
 
 void max7219Matrix::setup_bright(uint8_t bright){
@@ -42,7 +42,7 @@ void max7219Matrix::setup_decode_mode(uint8_t mode){
 }
 
 void max7219Matrix::setup_scan_limit(uint8_t scanLimit){
-  max7219Matrix::send_cmd(INTENSITY, scanLimit);
+  max7219Matrix::send_cmd(SCAN_LIMIT, scanLimit);
 }
 
 void max7219Matrix::shut_down(uint8_t data){
@@ -59,8 +59,21 @@ void max7219Matrix::setup_display_test(uint8_t data){
     max7219Matrix::send_cmd(DISPLAY_TEST, 0x01);
 }
 
-void max7219Matrix::send_pattern(const uint8_t (&pattern)[8]){
-  for(uint8_t i = 0; i < 8; ++i){
-    max7219Matrix::send_cmd(i + 1, pattern[i]);
+void max7219Matrix::send_pattern(uint8_t* pattern, uint8_t size){
+  if (size < 8){
+    uint8_t newArray[] = {0, 0, 0, 0, 0, 0, 0, 0};
+    for(uint8_t i = 0; i < 8; ++i){
+      if(i < size)
+        newArray[i] = *(pattern + i);
+      max7219Matrix::select_dot(i + 1, newArray[i]);
+    }
+  } else{
+    for(uint8_t i = 0; i < size; ++i){
+      max7219Matrix::select_dot(i + 1, *(pattern + i));
+    }
   }
+}
+
+void max7219Matrix::select_dot(uint8_t collum, uint8_t row){
+  max7219Matrix::send_cmd(collum, row);
 }
